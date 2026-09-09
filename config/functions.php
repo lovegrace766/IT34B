@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . '/../includes/activity-logger.php');
 
 function redirect($path){
     header("Location:" . BASE_URL . $path);
@@ -6,7 +7,7 @@ function redirect($path){
 }
 
 function loginUser($pdo, $login, $password){
-    #Query 2
+    //#Query 2
     $sql = "
         SELECT
             user_id,
@@ -25,18 +26,34 @@ function loginUser($pdo, $login, $password){
 
     $user = $stmt->fetch();
 
+    // User doesn't exist
     if (!$user) {
-        return false;
-    }
-
+    die("User not found");
+}
+    // Wrong password
     if (!password_verify($password, $user['user_password'])) {
-        return false;
-    }
-
+    logActivity(
+        $pdo,
+        $user['user_id'],
+        $user['user_email'],
+        'login',
+        'failed'
+    );
+    return false;
+}
+    // Successful login
     $_SESSION['user_id'] = $user['user_id'];
     $_SESSION['user_email'] = $user['user_email'];
     $_SESSION['user_username'] = $user['user_username'];
     $_SESSION['user_role'] = $user['user_role'];
+    
+    logActivity(
+        $pdo,
+        $user['user_id'],
+        $user['user_email'],
+        'login',
+        'success'
+    );
 
     return true;
 }

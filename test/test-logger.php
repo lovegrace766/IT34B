@@ -1,7 +1,7 @@
 <?php
 
-require_once(__DIR__ . '/config/config.php');
-
+require_once(__DIR__ . '/../config/config.php');
+require_once(__DIR__ . '/../includes/activity-logger.php');
 
 $user_id = null;
 $user_email = "test@example.com";

@@ -1,43 +1,64 @@
-CREATE TABLE IF NOT EXISTS activity_logs(
-    activity_log_id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id VARCHAR(50),
-    user_email VARCHAR(50),
-    activity_log_action VARCHAR(50) NOT NULL,
-    action_log_status ENUM('success','failed') DEFAULT 'success',
-
-
-    --Client Parameters
-    activity_log_ip_address VARCHAR(45),
-    activity_log_user_agent VARCHAR(255),
-
-    --Timestamp
-    activity_log_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+-- ============================================
+-- USERS TABLE
+-- ============================================
 
 CREATE TABLE IF NOT EXISTS users(
       user_id INT AUTO_INCREMENT PRIMARY KEY,
-      
       user_email VARCHAR(50) UNIQUE NOT NULL,
       user_username VARCHAR(20) UNIQUE NOT NULL,
       user_password VARCHAR(255) NOT NULL,
       user_role ENUM('admin','manager','user') NOT NULL DEFAULT 'user',
 
-      user_created_at TIMESTAMP,
-           DEFAULT CURRENT_TIMESTAMP,
-
-      user_updated_at TIMESTAMP
-           DEFAULT CURRENT TIMESTAMP
-           ON UPDATE CURRENT TIMESTAMP
+      user_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      user_updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+           ON UPDATE CURRENT_TIMESTAMP
 
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO users
-(
+-- ============================================
+-- ACTIVITY LOGS TABLE
+-- ============================================
+
+CREATE TABLE IF NOT EXISTS activity_logs(
+    activity_log_id INT AUTO_INCREMENT PRIMARY KEY,
+
+    user_id INT,
+    user_email VARCHAR(50),
+
+    activity_log_action VARCHAR(50) NOT NULL,
+
+    action_log_status ENUM('success','failed') 
+         DEFAULT 'success',
+
+    
+    -- Client Parameters
+    activity_log_ip_address VARCHAR(45),
+    activity_log_user_agent VARCHAR(255),
+
+    -- Timestamp
+    activity_log_created_at TIMESTAMP 
+       DEFAULT CURRENT_TIMESTAMP,
+
+        CONSTRAINT fk_activity_logs_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4;
+
+
+-- ============================================
+-- DEFAULT USERS
+-- ============================================
+
+INSERT INTO users (
     user_email,
     user_username,
     user_password,
     user_role
+
 )
 VALUES
 (
@@ -58,3 +79,4 @@ VALUES
     '$2y$10$HNfhClczEWBxcFuJwP53iu2Y75Tba7IEtmX8vX.1tp0dZ5EVt9CbO',
     'user'
 );
+
