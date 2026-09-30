@@ -35,13 +35,6 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.8/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="https://cdn.datatables.net/3.0.4/css/dataTables.bootstap5.min.css"/>
     
-</head>
-<body>
-    <h1>Welcome Admin</h1>
-    <a href="<?= BASE_URL ?>/app/auth/signout.php">Sign Out</a>
-    <table border="1">
-    <title>Activity Logs</title>
-
 <style>
     body {
     background-color: #fff5f8;
@@ -83,6 +76,15 @@ h1 {
     background-color: #fff0f5;
 }
 </style>
+
+</head>
+<body>
+    <h1>Welcome Admin</h1>
+    <a href="<?= BASE_URL ?>/app/auth/signout.php">Sign Out</a>
+    <table border="1">
+    <title>Activity Logs</title>
+
+
 </head>
 
 <body>

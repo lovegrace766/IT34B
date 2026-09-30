@@ -1,6 +1,6 @@
 <?php
 
-function loginUser($pdo, $login, $password){
+function loginUser($pdo,$login,$password){
     //#Query 2
     $sql = "
         SELECT
@@ -21,39 +21,23 @@ function loginUser($pdo, $login, $password){
     $user = $stmt->fetch();
 
     // User doesn't exist
-    if (!$user) {
-    die("User not found");
+    if (!$user){
+        return false;
 }
     // Wrong password
-    if (!password_verify($password, $user['user_password'])) {
-    logActivity(
-        $pdo,
-        $user['user_id'],
-        $user['user_email'],
-        'login',
-        'failed'
-    );
+    if (!password_verify($password, $user['user_password'])){
     return false;
 }
     // Successful login
-    $_SESSION['user_id'] = $user['user_id'];
-    $_SESSION['user_email'] = $user['user_email'];
-    $_SESSION['user_username'] = $user['user_username'];
-    $_SESSION['user_role'] = $user['user_role'];
+    $_SESSION['user_id']=$user['user_id'];
+    $_SESSION['user_email']=$user['user_email'];
+    $_SESSION['user_username']=$user['user_username'];
+    $_SESSION['user_role'] =$user['user_role'];
     
     $_SESSION['session_id'] = startUserSession($pdo);
 
     return true;
 
-    logActivity(
-        $pdo,
-        $user['user_id'],
-        $user['user_email'],
-        'login',
-        'success'
-    );
-
-    return true;
 }
 
 function requireLogin()
@@ -68,7 +52,7 @@ function requireRole($role)
 {
     requireLogin();
 
-    if ($_SESSION['user_role'] !== $role) {
+    if ($_SESSION['user_role'] !== $role){
         http_response_code(403);
         die('Access denied.');
     }
