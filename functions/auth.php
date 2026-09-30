@@ -28,6 +28,12 @@ function loginUser($pdo,$login,$password){
     if (!password_verify($password, $user['user_password'])){
     return false;
 }
+
+    // Check if user already has an active session
+    if(hasActiveUserSession($pdo,$user['user_id'])){
+        return 'active_session';
+        
+    }
     // Successful login
     $_SESSION['user_id']=$user['user_id'];
     $_SESSION['user_email']=$user['user_email'];
