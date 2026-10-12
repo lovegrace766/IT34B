@@ -1,6 +1,5 @@
 <?php
 require_once(__DIR__ . '/config/config.php');
-require_once(__DIR__ . '/config/functions.php');
 
 
 if(isset($_SESSION['user_id'])) {
@@ -22,12 +21,25 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     }else{
         
+        $result = loginUser($pdo,$login,$password);
+        
+        if($result===true){
 
-         if(loginUser($pdo,$login,$password)){
+        // Log incomplete login attempt
             logActivity($pdo,$_SESSION['user_id'],$_SESSION['user_email'],'login','success');
-            echo 'location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php';
+
+            echo 'Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php';
             header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
             exit;
+
+        }elseif($result=== 'active_session'){
+            echo 'This account is already logged in on another device';
+
+            $error = 'This account is already logged in on another device';
+            
+
+        }else{
+            $error = 'Invalid login credentials';
         }
     }
 }
@@ -57,10 +69,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             name="password" 
             required>
     <br>
-    <button type="submit">Login</button>
+    <button type="submit">Sign In</button>
 </form>
 
-    
-    
+<?php if(isset($_GET['timeout'])): ?>
+    <p>Your session has expired due to inactivity. Please log in again</p>
+<?php endif; ?>
 </body>
 </html>

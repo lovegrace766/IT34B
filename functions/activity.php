@@ -13,7 +13,7 @@
         //Get user agent (browser)
         $user_agent = substr($_SERVER['HTTP_USER_AGENT'] ?? 'Unknown' ,0,255);
 
-        // Application Query #1
+        // Insert Activity Log
         $stmt = $pdo -> prepare("
             INSERT INTO activity_logs(
             user_id,
@@ -27,7 +27,7 @@
  
     
 
-         $success = $stmt->execute([
+         $return = $stmt->execute([
            $user_id,
            $user_email,
            $action,
@@ -35,13 +35,12 @@
            $ip,
            $user_agent
          ]);
-
-         return $success;
          
- 
-     }
-     catch (PDOException $e){
-    echo "Database Error: " . $e->getMessage();
-    return false;
+    } catch (PDOException $e) {
+        error_log("Activity Log Error: " . $e->getMessage());
+        return false;
+    }
+     
 }
-}
+
+?>
